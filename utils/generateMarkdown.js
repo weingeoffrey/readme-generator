@@ -5,7 +5,12 @@ function renderTitleSection(data) {
 }
 
 function renderDescSection(data) {
-  return "## Description" + "\n" + `![badge](${renderLicenseBadge(data.licenseSelect)})` + "\n\n" + `${data.projectDescription}`
+  if (data.licenseSelect == "No License") {
+    return "## Description" + "\n\n" + `${data.projectDescription}`
+  }
+  else {
+    return "## Description" + "\n" + `![badge](${renderLicenseBadge(data.licenseSelect)})` + "\n\n" + `${data.projectDescription}`
+  }
 }
 
 function renderTableOfContents(data) {
@@ -37,6 +42,10 @@ function renderTableOfContents(data) {
   if (data.testingConfirm == true) {
     tableOfContents += "\n" + dedent`
                              * [Tests](#tests)`
+  }
+
+  if (data.licenseSelect == "No License") {
+    tableOfContents = tableOfContents.replace("* [License](#license)", "");
   }
 
   tableOfContents += "\n" + dedent`
