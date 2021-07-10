@@ -1,18 +1,16 @@
+const dedent = require("dedent");
+
 function renderTitleSection(data) {
   return `# ${data.projectTitle}`
 }
 
 function renderDescSection(data) {
-  return `## Description 
-  
-  ${data.projectDescription}`
+  return "## Description" + "\n" + `${data.projectDescription}`
 }
 
 function renderInstallationSection(data) {
   if (data.installConfirm == true) {
-     return `## Installation
-     
-     ${data.installInstruction}`
+     return "## Installation" + "\n" + `${data.installInstruction}`
   }
   else {
     return ""
@@ -20,19 +18,15 @@ function renderInstallationSection(data) {
 }
 
 function renderUsageSection(data) {
-  return `## Usage
-  
-  ${data.usageInfo}`
+  return "## Usage" + "\n" + `${data.usageInfo}`
 }
 
 function renderContribSection(data) {
   if (data.contributionConfirm == true) {
     if (data.contributionGuide == "") {
-      return `## Contributing
+      return dedent`## Contributing
 
-      # Contributor Covenant Code of Conduct
-
-      ## Our Pledge
+      ### Our Pledge
 
       We as members, contributors, and leaders pledge to make participation in our
       community a harassment-free experience for everyone, regardless of age, body
@@ -44,7 +38,7 @@ function renderContribSection(data) {
       We pledge to act and interact in ways that contribute to an open, welcoming,
       diverse, inclusive, and healthy community.
 
-      ## Our Standards
+      ### Our Standards
 
       Examples of behavior that contributes to a positive environment for our
       community include:
@@ -68,7 +62,7 @@ function renderContribSection(data) {
       * Other conduct which could reasonably be considered inappropriate in a
         professional setting
 
-      ## Enforcement Responsibilities
+      ### Enforcement Responsibilities
 
       Community leaders are responsible for clarifying and enforcing our standards of
       acceptable behavior and will take appropriate and fair corrective action in
@@ -80,7 +74,7 @@ function renderContribSection(data) {
       not aligned to this Code of Conduct, and will communicate reasons for moderation
       decisions when appropriate.
 
-      ## Scope
+      ### Scope
 
       This Code of Conduct applies within all community spaces, and also applies when
       an individual is officially representing the community in public spaces.
@@ -88,7 +82,7 @@ function renderContribSection(data) {
       posting via an official social media account, or acting as an appointed
       representative at an online or offline event.
 
-      ## Enforcement
+      ### Enforcement
 
       Instances of abusive, harassing, or otherwise unacceptable behavior may be
       reported to the community leaders responsible for enforcement at
@@ -98,12 +92,12 @@ function renderContribSection(data) {
       All community leaders are obligated to respect the privacy and security of the
       reporter of any incident.
 
-      ## Enforcement Guidelines
+      ### Enforcement Guidelines
 
       Community leaders will follow these Community Impact Guidelines in determining
       the consequences for any action they deem in violation of this Code of Conduct:
 
-      ### 1. Correction
+      #### 1. Correction
 
       **Community Impact**: Use of inappropriate language or other behavior deemed
       unprofessional or unwelcome in the community.
@@ -112,7 +106,7 @@ function renderContribSection(data) {
       clarity around the nature of the violation and an explanation of why the
       behavior was inappropriate. A public apology may be requested.
 
-      ### 2. Warning
+      #### 2. Warning
 
       **Community Impact**: A violation through a single incident or series
       of actions.
@@ -124,7 +118,7 @@ function renderContribSection(data) {
       like social media. Violating these terms may lead to a temporary or
       permanent ban.
 
-      ### 3. Temporary Ban
+      #### 3. Temporary Ban
 
       **Community Impact**: A serious violation of community standards, including
       sustained inappropriate behavior.
@@ -135,7 +129,7 @@ function renderContribSection(data) {
       with those enforcing the Code of Conduct, is allowed during this period.
       Violating these terms may lead to a permanent ban.
 
-      ### 4. Permanent Ban
+      #### 4. Permanent Ban
 
       **Community Impact**: Demonstrating a pattern of violation of community
       standards, including sustained inappropriate behavior,  harassment of an
@@ -144,7 +138,7 @@ function renderContribSection(data) {
       **Consequence**: A permanent ban from any sort of public interaction within
       the community.
 
-      ## Attribution
+      ### Attribution
 
       This Code of Conduct is adapted from the [Contributor Covenant][homepage],
       version 2.0, available at
@@ -165,16 +159,17 @@ function renderContribSection(data) {
       `
     }
     else {
-      return `## Contributing
-      
-      ${data.contributionGuide}`
+      return "## Contributing" + "\n" + `${data.contributionGuide}`
     }
+  }
+  else {
+    return ""
   }
 }
 
 function renderTestSection(data) {
   if (data.testingConfirm == true) {
-    return `## Tests
+    return dedent`## Tests
     
     ${data.testingInstructions}`
   }
@@ -184,17 +179,20 @@ function renderTestSection(data) {
 }
 
 function renderQuestionSection(data) {
-  return `## Questions
-  
+  return dedent`## Questions
+
   If you have any questions feel free to reach me at:
+
   GitHub: ${data.githubUsername}
+  
   Email: ${data.emailAddress}`
 }
 
 // TODO: Create a function that returns a license badge based on which license is passed in
 // If there is no license, return an empty string
 function renderLicenseBadge(license) {
-  return `https://img.shields.io/static/v1?label=license&message=${license}&color=green`
+  license = license.replace(/ /g, "%20");
+  return dedent`https://img.shields.io/static/v1?label=license&message=${license}&color=green`
 }
 
 // TODO: Create a function that returns the license link
@@ -224,24 +222,26 @@ function renderLicenseSection(license) {
     return "";
   }
   else {
-    return `## License 
+    return dedent`## License 
     
-    ![badge](${renderLicenseBadge})
-    URL to License: ${renderLicenseLink}`
+    ![badge](${renderLicenseBadge(license)})
+
+    URL to License: ${renderLicenseLink(license)}`
   }
 }
 
 // TODO: Create a function to generate markdown for README
 function generateMarkdown(data) {
-  renderTitleSection(data) +
-  renderDescSection(data) +
-  renderInstallationSection(data) +
-  renderUsageSection(data) +
-  renderLicenseSection(data.licenseSelect) +
-  renderContribSection(data) +
-  renderTestSection(data) + 
+  let licenseSec = renderLicenseSection(data.licenseSelect);
+  return renderTitleSection(data) + "\n\n" +
+  renderDescSection(data) + "\n\n" +
+  renderInstallationSection(data) + "\n\n" +
+  renderUsageSection(data) + "\n\n" +
+  licenseSec + "\n\n" +
+  renderContribSection(data) + "\n\n" +
+  renderTestSection(data) + "\n\n" +
   renderQuestionSection(data);
-  console.log("hey it did it");
+
 }
 
 module.exports = generateMarkdown;
