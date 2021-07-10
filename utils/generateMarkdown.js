@@ -5,9 +5,44 @@ function renderTitleSection(data) {
 }
 
 function renderDescSection(data) {
-  return "## Description" + "\n" + `${data.projectDescription}`
+  return "## Description" + "\n" + `![badge](${renderLicenseBadge(data.licenseSelect)})` + "\n\n" + `${data.projectDescription}`
 }
 
+function renderTableOfContents(data) {
+  let tableOfContents = `## Table of Contents` + "\n"
+  if (data.installConfirm == true && data.contributionConfirm == true) {
+    tableOfContents += dedent`
+                             * [Installation](#installation)
+                             * [Usage](#usage)
+                             * [Contributing](#contributing)`
+  }
+  else if (data.installConfirm == true && data.contributionConfirm == false) {
+    tableOfContents += "\n" + dedent`
+                                    * [Installation](#installation)
+                                    * [Usage](#usage)
+                                    * [License](#license)`
+  }
+  else if (data.installConfirm == false && data.contributionConfirm == true) {
+    tableOfContents += "\n" + dedent`
+                             * [Usage](#usage)
+                             * [License](#license)
+                             * [Contributing](#contributing)`
+  }
+  else if (data.installConfirm == false && data.contributionConfirm == false){
+    tableOfContents += "\n" + dedent`
+                             * [Usage](#usage)
+                             * [License](#license)`
+  }
+  
+  if (data.testingConfirm == true) {
+    tableOfContents += "\n" + dedent`
+                             * [Tests](#tests)`
+  }
+
+  tableOfContents += "\n" + dedent`
+                           * [Questions](#questions)`;
+  return tableOfContents;
+}
 function renderInstallationSection(data) {
   if (data.installConfirm == true) {
      return "## Installation" + "\n" + `${data.installInstruction}`
@@ -199,7 +234,7 @@ function renderLicenseBadge(license) {
 // If there is no license, return an empty string
 function renderLicenseLink(license) {
   if (license === "Apache") {
-    return "https://spdx.org/licenses/MIT.html"
+    return "https://spdx.org/licenses/Apache-2.0.html"
   }
   else if (license === "GNU GPLv2") {
     return "https://spdx.org/licenses/GPL-2.0-or-later.html"
@@ -223,8 +258,6 @@ function renderLicenseSection(license) {
   }
   else {
     return dedent`## License 
-    
-    ![badge](${renderLicenseBadge(license)})
 
     URL to License: ${renderLicenseLink(license)}`
   }
@@ -235,6 +268,7 @@ function generateMarkdown(data) {
   let licenseSec = renderLicenseSection(data.licenseSelect);
   return renderTitleSection(data) + "\n\n" +
   renderDescSection(data) + "\n\n" +
+  renderTableOfContents(data) + "\n\n" +
   renderInstallationSection(data) + "\n\n" +
   renderUsageSection(data) + "\n\n" +
   licenseSec + "\n\n" +

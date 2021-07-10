@@ -96,9 +96,7 @@ function writeToFile(fileName, data) {
 function init() {
     inquirer.prompt(questions).then((answers) => {
         const readme = generateMarkdown(answers);
-
-        writeToFile("test2.md", readme)
-        
+        writeToFile("./dist/README.md", readme)
     });
 }
 
